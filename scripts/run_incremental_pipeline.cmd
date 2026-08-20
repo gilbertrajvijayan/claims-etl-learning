@@ -98,6 +98,16 @@ if errorlevel 1 (
 )
 
 echo.
+echo Step 7: Running data-quality checks...
+call bq.cmd query --use_legacy_sql=false --location=%LOCATION% "--parameter=run_id:STRING:%RUN_ID%" < sql\run_data_quality_checks.sql
+
+if errorlevel 1 (
+    set "ERROR_STEP=STEP_7_DATA_QUALITY_CHECKS"
+    set "ERROR_MESSAGE=One or more automated data-quality checks failed."
+    goto :pipeline_failed
+)
+
+echo.
 echo Updating pipeline audit record...
 call bq.cmd query --use_legacy_sql=false --location=%LOCATION% --parameter=run_id:STRING:%RUN_ID% < sql\audit_pipeline_success.sql
 
