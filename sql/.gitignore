@@ -1,0 +1,24 @@
+# Python virtual environment
+.venv/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# VS Code settings
+.vscode/
+
+# Generated output files
+data/processed/
+
+# Pipeline logs
+*.log
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+
+# Credentials and secrets
+*.json
+.env
