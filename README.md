@@ -130,6 +130,37 @@ The script:
 5. Updates the claims mart.
 6. Runs reconciliation checks.
 
+## Event-Driven Cloud Pipeline
+
+The project also supports automatic processing using Cloud Run and Eventarc.
+
+When a file matching `raw/claims_batch_*.csv` is uploaded to Cloud Storage:
+
+1. Cloud Storage generates an object-finalized event.
+2. Eventarc sends the event to the authenticated Cloud Run service.
+3. The Python function validates the file path and extension.
+4. The file is loaded into `claims_raw.claims_incoming`.
+5. BigQuery MERGE statements update valid claims, rejected claims, and the mart.
+6. Reconciliation and automated data-quality checks run.
+7. The audit table records the execution as `SUCCESS` or `FAILED`.
+
+Files that do not match the expected claims-batch naming pattern are logged and ignored.
+
+### Cloud Components
+
+- Cloud Storage — incoming file landing location
+- Eventarc — event routing
+- Cloud Run — serverless Python orchestration
+- Cloud Build — source build and deployment
+- Artifact Registry — container-image storage
+- BigQuery — raw, staging, mart, audit, and quality layers
+- Cloud Logging — execution and troubleshooting logs
+
+### Automatic Trigger Test
+
+```powershell
+gcloud storage cp data\raw\claims_batch_5.csv gs://gilbert-claims-etl-learning-2026/raw/claims_batch_5.csv
+
 ## Data Reconciliation
 
 After processing, the pipeline compares record counts across the staging and mart tables to confirm that validated records were loaded successfully.
