@@ -27,6 +27,8 @@ USING (
        OR claim_amount < 0
        OR UPPER(TRIM(claim_status))
           NOT IN ('PAID', 'PENDING', 'DENIED')
+       OR claim_date IS NULL
+       OR updated_at IS NULL
 ) AS source
 ON target.claim_id = source.claim_id
 AND target.updated_at = source.updated_at

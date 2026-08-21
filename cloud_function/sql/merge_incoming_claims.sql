@@ -14,6 +14,8 @@ USING (
       AND claim_amount >= 0
       AND UPPER(TRIM(claim_status))
           IN ('PAID', 'PENDING', 'DENIED')
+      AND claim_date IS NOT NULL
+      AND updated_at IS NOT NULL
 ) AS source
 ON target.claim_id = source.claim_id
 
